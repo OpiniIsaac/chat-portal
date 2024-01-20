@@ -7,14 +7,31 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import InsertEmoticon from '@mui/icons-material/InsertEmoticonOutlined';
 import MicButton from '@mui/icons-material/MicOutlined';
 import SendIcon from '@mui/icons-material/Send';
+import axios from 'axios';
 
 function Chat() {
 
   const[seed, setSeed] = useState('');
-  
+  const [groups, setGroups] = useState([]);
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
   }, []);
+
+  useEffect(() => {
+    
+     const fetchGroups = async () => {
+       try {
+         const userId = '65aa1a4bb8aa74d02f4cb807';
+         const response = await axios.get(`http://localhost:4000/api/v1/chat/groups/${userId}`);
+         setGroups(response.data.data);
+       } catch (error) {
+         // Handle error (display an error message, log the error, etc.)
+         console.error("Error fetching groups:", error);
+       }
+     };
+ 
+     fetchGroups();
+   }, []);
 
   return (
     <div className='Chat'>
