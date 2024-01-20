@@ -3,6 +3,7 @@ import './sidebar.css';
 import { Avatar, IconButton, Menu, MenuItem } from '@mui/material';
 import { Chat, DonutLarge, MoreVert, SearchOutlined } from '@mui/icons-material';
 import LongMenu from './LongMenu';
+import SideBarChat from './SideBarChat';
 
 function SideBar() {
   
@@ -25,10 +26,10 @@ function SideBar() {
         </div>
       </div>
       <div className="sidebar_chats">
-        {/* <SidebarChat addNewChat/> */}
-        {/* <SidebarChat />
-        <SidebarChat />
-        <SidebarChat /> */}
+        <SideBarChat addNewChat/>
+         <SideBarChat /> 
+        <SideBarChat />
+        <SideBarChat /> 
       </div>
     </div>
   );
