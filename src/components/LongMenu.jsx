@@ -1,16 +1,20 @@
-import * as React from "react";
+// LongMenu.jsx
+
+import React, { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+import CreateGroupForm from "./CreateGroupForm";
 
 const options = ["Create Group", "Settings"];
 
 const ITEM_HEIGHT = 48;
 
 export default function LongMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openGroupForm, setOpenGroupForm] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,13 +24,27 @@ export default function LongMenu() {
     setAnchorEl(null);
   };
 
+  const handleCreateGroup = (formData) => {
+    // Handle the creation of the group with formData
+    console.log("Creating group with data:", formData);
+  };
+
+  const handleOpenGroupForm = () => {
+    setOpenGroupForm(true);
+    handleClose();
+  };
+
+  const handleCloseGroupForm = () => {
+    setOpenGroupForm(false);
+  };
+
   return (
     <div>
       <IconButton
         aria-label="more"
         id="long-button"
-        aria-controls={open ? "long-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
+        aria-controls={openGroupForm ? undefined : "long-menu"}
+        aria-expanded={openGroupForm ? undefined : "true"}
         aria-haspopup="true"
         onClick={handleClick}
       >
@@ -38,15 +56,15 @@ export default function LongMenu() {
           "aria-labelledby": "long-button",
         }}
         anchorEl={anchorEl}
-        open={open}
+        open={!openGroupForm && Boolean(anchorEl)}
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right", 
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right", 
+          horizontal: "right",
         }}
         PaperProps={{
           style: {
@@ -56,15 +74,16 @@ export default function LongMenu() {
         }}
       >
         {options.map((option) => (
-          <MenuItem
-            key={option}
-            selected={option === "Pyxis"}
-            onClick={handleClose}
-          >
-            {option}
+          <MenuItem key={option} selected={option === "Pyxis"} onClick={handleCreateGroup}>
+            {option === "Create Group" ? (
+              <span onClick={handleOpenGroupForm}>{option}</span>
+            ) : (
+              option
+            )}
           </MenuItem>
         ))}
       </Menu>
+      <CreateGroupForm open={openGroupForm} onClose={handleCloseGroupForm} onCreateGroup={handleCreateGroup} />
     </div>
   );
 }

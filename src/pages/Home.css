@@ -7,10 +7,14 @@
   @media (max-width: 600px) {
     .app_body {
       flex-direction: column;
-      height: 100vh;
-      width: 100vw
+    }
+  
+    .app_body > .Chat {
+      display: none;
+    }
+  
+    .app_body > .SideBar {
+      flex: 1; /* Make the sidebar take up all available space */
     }
   }
-  
-
   
