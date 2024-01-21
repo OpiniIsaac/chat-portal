@@ -1,65 +1,70 @@
-import React, {useState} from "react";
-import { TextField, FormControl, Button } from "@mui/material";
-import { Link } from "react-router-dom"
- 
-const Login = () => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [emailError, setEmailError] = useState(false)
-    const [passwordError, setPasswordError] = useState(false)
- 
-    const handleSubmit = (event) => {
-        event.preventDefault()
- 
-        setEmailError(false)
-        setPasswordError(false)
- 
-        if (email == '') {
-            setEmailError(true)
-        }
-        if (password == '') {
-            setPasswordError(true)
-        }
- 
-        if (email && password) {
-            console.log(email, password)
-        }
-    }
-     
-    return ( 
-        <React.Fragment>
-        <form autoComplete="off" onSubmit={handleSubmit}>
-            <h2>Login Form</h2>
-                <TextField 
-                    label="Email"
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                    variant="outlined"
-                    color="secondary"
-                    type="email"
-                    sx={{mb: 3}}
-                    fullWidth
-                    value={email}
-                    error={emailError}
-                 />
-                 <TextField 
-                    label="Password"
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    variant="outlined"
-                    color="secondary"
-                    type="password"
-                    value={password}
-                    error={passwordError}
-                    fullWidth
-                    sx={{mb: 3}}
-                 />
-                 <Button variant="outlined" color="secondary" type="submit">Login</Button>
-             
-        </form>
-        <small>Need an account? <Link to="/">Register here</Link></small>
-        </React.Fragment>
-     );
-}
- 
-export default Login;
+import React, { useState } from 'react';
+import { Card, CardContent, TextField, Button, Typography, Container, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
+
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Handle the login logic here
+    console.log('Email:', email, 'Password:', password);
+  };
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <Card sx={{ mt: 8, p: 2 }}>
+        <CardContent>
+          <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+            Sign in
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+          </form>
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <Typography variant="body2">
+              Don;t have an account? <Link to="/register">Sign Up</Link>
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
+    </Container>
+  );
+};
+
+export default LoginForm;
