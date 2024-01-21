@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { Card, CardContent, TextField, Button, Typography, Container, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { authActions } from '../context/authSlice';
+import axios from 'axios';
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle the login logic here
-    console.log('Email:', email, 'Password:', password);
-  };
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const handleSubmit = async (event) => {
+     event.preventDefault();
+ 
+     try {
+       const response = await axios.post('http://localhost:4000/api/v1/auth/login', { 
+        email, password });
+ 
+       dispatch(authActions.loginUser(response.data)); 
+       console.log(response.data)
+       navigate('/'); // Redirect to home page
+     } catch (error) {
+       console.error('Login error:', error);
+       // Handle login errors appropriately (e.g., display error messages)
+     }
+   };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -52,6 +65,7 @@ const LoginForm = () => {
               variant="contained"
               color="primary"
               sx={{ mt: 3, mb: 2 }}
+        
             >
               Sign In
             </Button>

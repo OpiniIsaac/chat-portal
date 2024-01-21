@@ -1,17 +1,35 @@
 import React, { useState } from 'react';
 import { Card, CardContent, TextField, Button, Typography, Container, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+ 
 const RegistrationForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [department, setDepartment] = useState('');
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle the registration logic here
-    console.log('Name:', name, 'Email:', email, 'Role:', role, 'Department:', department);
-  };
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
+     event.preventDefault();
+ 
+     try {
+       const response = await axios.post('http://localhost:4000/api/v1/auth/signup', {
+         name,
+         email,
+         role,
+         department,
+         password
+       });
+ 
+       console.log('Registration successful:', response.data);
+       // Redirect to login page on success
+       navigate('/login'); 
+     } catch (error) {
+       console.error('Registration error:', error);
+       
+     }
+   };
 
   return (
     <Container component="main" maxWidth="sm">
@@ -70,6 +88,19 @@ const RegistrationForm = () => {
               autoComplete="department"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
+            />
+               <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               type="submit"
