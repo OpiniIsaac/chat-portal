@@ -12,8 +12,8 @@ function SideBar() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const userId = '65aa1a4bb8aa74d02f4cb807';
-        const response = await axios.get(`http://localhost:4000/api/v1/chat/groups/${userId}`);
+        const userId = '65acbe29025c59e9415b7e12'
+        const response = await axios.get(`http://localhost:4000/api/v1/chat/groups/65aa1a4bb8aa74d02f4cb807`);
         setGroups(response.data.data);
       } catch (error) {
         // Handle error (display an error message, log the error, etc.)
