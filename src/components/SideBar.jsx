@@ -36,6 +36,8 @@ function SideBar() {
         }
       };
 
+
+      
       fetchGroups();
     }
   }, []);
@@ -59,7 +61,7 @@ function SideBar() {
       <div className="sidebar_chats">
         <SideBarChat addNewChat />
         {groups.map((group) => (
-          <SideBarChat key={group._id} name={group.name} />
+          <SideBarChat key={group._id} name={group.name}  id={group._id} />
         ))}
       </div>
     </div>

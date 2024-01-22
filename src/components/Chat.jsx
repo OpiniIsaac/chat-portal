@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './chat.css';
 import { Avatar, IconButton } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
@@ -8,13 +8,15 @@ import InsertEmoticon from '@mui/icons-material/InsertEmoticonOutlined';
 import MicButton from '@mui/icons-material/MicOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 function Chat() {
   const [seed, setSeed] = useState('');
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-
-
+  const [groups, setGroups] = useState([]);
+  const groupId = useSelector(state => state.group.group);
+  const chatBodyRef = useRef(null); // Create a ref for the chat body
 
   const getUserFromLocalStorage = () => {
     const storedUser = localStorage.getItem('user');
@@ -26,28 +28,49 @@ function Chat() {
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
-    // Fetch chat messages when the component mounts
+
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/v1/chat/test/group/${groupId}`);
+        console.log(response.data.data);
+        setGroups(response.data.data);
+        console.log(groups);
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+      }
+    };
+
+    fetchGroups();
     fetchChatMessages();
-  }, []);
+  }, [groupId]);
+
+  useEffect(() => {
+    // Scroll to the bottom when messages change
+    scrollToBottom();
+  }, [messages]);
 
   const fetchChatMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/v1/chat/messages/65ad19be14364b1bd9246ae4');
+      if (!groupId) {
+        return null;
+      }
+      const response = await axios.get(`http://localhost:4000/api/v1/chat/messages/${groupId}`);
       setMessages(response.data.data);
     } catch (error) {
       console.error('Error fetching chat messages:', error);
     }
   };
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (e) => {
     try {
+      e.preventDefault();
       // Assuming you have a function to get the current user ID
-      const currentUserID = "65ad1aae14364b1bd9246aea";
+      const currentUserID = getCurrentUserID();
 
       // Sending a new message
       await axios.post('http://localhost:4000/api/v1/chat/', {
         sender_id: currentUserID,
-        group_id: '65ad19be14364b1bd9246ae4', // Replace with the actual group ID
+        group_id: groupId, // Replace with the actual group ID
         content: newMessage,
       });
 
@@ -60,9 +83,13 @@ function Chat() {
   };
 
   const getCurrentUserID = () => {
-    // Replace this with the logic to get the current user ID
-    // For example, you might have user authentication implemented
-    return '65ad1aae14364b1bd9246aea';
+    const storedUser = getUserFromLocalStorage();
+    return storedUser.user._id;
+  };
+
+  const scrollToBottom = () => {
+    // Scroll to the bottom of the chat body
+    chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
   };
 
   return (
@@ -71,8 +98,8 @@ function Chat() {
         <Avatar src={`https://api.dicebear.com/5.x/avataaars/svg?seed=${seed}`} />
 
         <div className="chat_headerInfo">
-          <h3>Ronaldo</h3>
-          <p>Last seen in Saudi League</p>
+          <h3>{groups.name}</h3>
+         
         </div>
 
         <div className="chat_headerRight">
@@ -87,7 +114,7 @@ function Chat() {
           </IconButton>
         </div>
       </div>
-      <div className="chat_body">
+      <div className="chat_body" ref={chatBodyRef}>
         {messages.map((message) => (
           <p key={message._id} className={`chat_message ${message.sender_id._id === getCurrentUserID() ? 'chat_receiver' : ''}`}>
             <span className='chat_name'>{message.sender_id.name}</span>
@@ -100,13 +127,13 @@ function Chat() {
         <IconButton>
           <InsertEmoticon />
         </IconButton>
-        <form>
-        <input type="text" placeholder='Type a message' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
-        <IconButton onClick={handleSendMessage} id="Send">
-          <SendIcon />
-        </IconButton>
+        <form onSubmit={handleSendMessage}>
+          <input type="text" placeholder='Type a message' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+          <IconButton type="submit" id="Send">
+            <SendIcon />
+          </IconButton>
         </form>
-        
+
         <IconButton>
           <AttachFileOutlinedIcon />
         </IconButton>

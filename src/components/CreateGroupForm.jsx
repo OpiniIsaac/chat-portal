@@ -9,6 +9,17 @@ const CreateGroupForm = ({ open, onClose, onCreateGroup }) => {
   const [groupName, setGroupName] = useState("");
   const [description, setDescription] = useState("");
 
+  const getUserFromLocalStorage = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      return JSON.parse(storedUser);
+    }
+    return null;
+  };
+  const getCurrentUserID = () => {
+    const storedUser = getUserFromLocalStorage();
+    return storedUser.user._id;
+  };
   const handleCreateGroup = async () => {
     try {
      const creatorId= '65aa1a4bb8aa74d02f4cb807'
