@@ -14,6 +14,16 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
+
+
+  const getUserFromLocalStorage = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      return JSON.parse(storedUser);
+    }
+    return null;
+  };
+
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
     // Fetch chat messages when the component mounts

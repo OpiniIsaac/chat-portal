@@ -1,27 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './sidebar.css';
-import { Avatar, IconButton, Menu, MenuItem } from '@mui/material';
-import { Chat, DonutLarge, MoreVert, SearchOutlined } from '@mui/icons-material';
+import { Avatar, IconButton } from '@mui/material';
+import { Chat, DonutLarge, SearchOutlined } from '@mui/icons-material';
 import LongMenu from './LongMenu';
 import SideBarChat from './SideBarChat';
 
+
 function SideBar() {
   const [groups, setGroups] = useState([]);
+ 
+
+  const getUserFromLocalStorage = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      return JSON.parse(storedUser);
+    }
+    return null;
+  };
 
   useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const userId = '65acbe29025c59e9415b7e12'
-        const response = await axios.get(`http://localhost:4000/api/v1/chat/groups/65aa1a4bb8aa74d02f4cb807`);
-        setGroups(response.data.data);
-      } catch (error) {
-        // Handle error (display an error message, log the error, etc.)
-        console.error("Error fetching groups:", error);
-      }
-    };
+    const storedUser = getUserFromLocalStorage();
+    console.log(storedUser.user._id)
+    if (storedUser) {
+      const userId = storedUser.user._id;
+      console.log(userId)
 
-    fetchGroups();
+      const fetchGroups = async () => {
+        try {
+          const response = await axios.get(`http://localhost:4000/api/v1/chat/groups/${userId}`);
+          console.log(response.data.data);
+          setGroups(response.data.data);
+        } catch (error) {
+          console.error("Error fetching groups:", error);
+        }
+      };
+
+      fetchGroups();
+    }
   }, []);
 
   return (
@@ -31,13 +47,13 @@ function SideBar() {
         <div className="sidebar_headerRight">
           <IconButton> <DonutLarge/> </IconButton>
           <IconButton> <Chat/> </IconButton>
-         <LongMenu/>
+          <LongMenu/>
         </div>
       </div>
       <div className="sidebar_search">
         <div className="sidebar_searchContainer">
           <SearchOutlined />
-          <input type="text" placeholder="Search or start new chat" />
+          <input type="text" placeholder="Search or start a new chat" />
         </div>
       </div>
       <div className="sidebar_chats">

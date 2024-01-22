@@ -1,27 +1,40 @@
-// LongMenu.jsx
-
 import React, { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useDispatch } from 'react-redux';
+import { authActions } from '../context/authSlice';
 
 import CreateGroupForm from "./CreateGroupForm";
+import { useNavigate } from "react-router-dom";
 
-const options = ["Create Group", "Settings"];
+const options = ["Create Group", "Settings", "Logout"];
 
 const ITEM_HEIGHT = 48;
 
 export default function LongMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openGroupForm, setOpenGroupForm] = useState(false);
-
+  const dispatch = useDispatch();
+const navigate = useNavigate()
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    // Dispatch an action to reset the user in Redux store
+    dispatch(authActions.logoutUser());
+
+    // Remove the user from local storage
+    localStorage.removeItem('user');
+
+navigate('/login')
+    handleClose();
   };
 
   const handleCreateGroup = (formData) => {
@@ -74,7 +87,7 @@ export default function LongMenu() {
         }}
       >
         {options.map((option) => (
-          <MenuItem key={option} selected={option === "Pyxis"} onClick={handleCreateGroup}>
+          <MenuItem key={option} selected={option === "Pyxis"} onClick={option === "Logout" ? handleLogout : handleCreateGroup}>
             {option === "Create Group" ? (
               <span onClick={handleOpenGroupForm}>{option}</span>
             ) : (
