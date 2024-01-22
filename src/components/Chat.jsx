@@ -9,6 +9,7 @@ import MicButton from '@mui/icons-material/MicOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function Chat() {
   const [seed, setSeed] = useState('');
@@ -98,7 +99,9 @@ function Chat() {
         <Avatar src={`https://api.dicebear.com/5.x/avataaars/svg?seed=${seed}`} />
 
         <div className="chat_headerInfo">
-          <h3>{groups.name}</h3>
+        <Link to="/users" style={{ textDecoration: 'none', color: 'black' }}>
+            <h3>{groups.name}</h3>
+          </Link>
          
         </div>
 
