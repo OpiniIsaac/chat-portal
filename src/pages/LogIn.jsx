@@ -24,8 +24,7 @@ const LoginForm = () => {
       // Store user data in local storage
       localStorage.setItem('user', JSON.stringify(response.data));
 
-      // Dispatch the user data to the Redux store
-      dispatch(authActions.loginUser(response.data));
+    
 
       navigate('/'); // Redirect to home page
     } catch (error) {

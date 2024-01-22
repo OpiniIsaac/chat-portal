@@ -22,12 +22,12 @@ const CreateGroupForm = ({ open, onClose, onCreateGroup }) => {
   };
   const handleCreateGroup = async () => {
     try {
-     const creatorId= '65aa1a4bb8aa74d02f4cb807'
-      const response = await axios.post("http://localhost:4000/api/v1/chat/groups", {
+     const creatorId= getCurrentUserID()
+      await axios.post("http://localhost:4000/api/v1/chat/groups", {
         name: groupName,
         creatorId,
       });
-
+window.location.reload()
    
 
       onClose();
